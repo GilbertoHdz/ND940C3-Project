@@ -92,6 +92,11 @@ object NotificationUtils {
         notificationManager.notify(downloadId, notificationBuilder.build())
     }
 
+    fun clearNotification(context: Context, notificationId: Int) {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(notificationId)
+    }
+
     fun channelInfo(context: Context): ChannelInfo {
         return ChannelInfo(
             CHANNEL_ID_DOWNLOADS,

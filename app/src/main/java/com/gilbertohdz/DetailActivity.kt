@@ -3,6 +3,7 @@ package com.gilbertohdz
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.gilbertohdz.utils.DownloadStatus
+import com.gilbertohdz.utils.NotificationUtils
 import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailActivity : AppCompatActivity() {
@@ -11,6 +12,10 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
         setSupportActionBar(toolbar)
+
+        // Clean pending notification
+        val notificationDownloadId = intent.extras!!.getInt(EXTRA_DOWNLOAD_ID)
+        NotificationUtils.clearNotification(this, notificationDownloadId)
     }
 
 
