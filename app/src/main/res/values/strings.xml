@@ -12,16 +12,18 @@
     <string name="button_loading">We are loading </string>
     <string name="title_activity_detail">DetailActivity</string>
 
-    <string name="choose">Please choose a file to download.</string>
-    <string name="retrofit_option">Retrofit - Type-safe HTTP client for Android and Java by Square, Inc</string>
-    <string name="load_app">LoadApp - Current repository by Udacity</string>
-    <string name="glide">Glide - Image Loading Library by BumpTech</string>
+    <string name="choose_description">Please choose a file to download.</string>
+    <string name="retrofit_selection">Retrofit - Type-safe HTTP client for Android and Java by Square, Inc.</string>
+    <string name="load_app_selection">LoadApp - Current Repository by GilbertoHdz</string>
+    <string name="glide_selection">Glide - Image loading library by BumpTech</string>
+
     <string name="download">Download</string>
     <string name="downloading"> Downloading </string>
     <string name="download_files">Downloading Files</string>
-    <string name="success">File Successfully Downloaded</string>
-    <string name="fail">Failed to Download File</string>
-    <string name="details">View details</string>
+    <string name="download_success">File Successfully Downloaded</string>
+    <string name="download_fail">Failed to Download File</string>
+
+    <string name="view_details">View details</string>
     <string name="file">File: </string>
     <string name="status">Status: </string>
     <string name="back">Back</string>

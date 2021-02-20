@@ -10,6 +10,18 @@
     tools:showIn="@layout/activity_main">
 
 
+    <ImageView
+        android:id="@+id/contentMainCloudImg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#7C4F4F"
+        app:layout_constraintBottom_toTopOf="@+id/contentMainRadioGroup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_cloud_download_24"
+        app:tint="#FFEB3B" />
 
     <com.gilbertohdz.LoadingButton
         android:id="@+id/custom_button"
@@ -18,11 +30,48 @@
         android:layout_margin="20dp"
         android:text="@string/download"
         app:circularProgressColor="@color/colorAccent"
-        app:primaryBackgroundColor="@color/colorPrimary"
-        app:secondaryBackgroundColor="@color/colorPrimaryDark"
-        app:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contentMainRadioGroup"
+        app:primaryBackgroundColor="@color/colorPrimary"
+        app:secondaryBackgroundColor="@color/colorPrimaryDark"
+        app:textColor="@color/white" />
+
+    <RadioGroup
+        android:id="@+id/contentMainRadioGroup"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/custom_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contentMainCloudImg">
+
+        <RadioButton
+            android:id="@+id/rbGlide"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/glide_selection"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <RadioButton
+            android:id="@+id/rbLoadApp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/load_app_selection"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <RadioButton
+            android:id="@+id/rbRetrofit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/retrofit_selection"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

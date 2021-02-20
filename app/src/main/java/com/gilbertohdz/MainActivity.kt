@@ -8,9 +8,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import com.gilbertohdz.utils.DownloadStatus
+import com.gilbertohdz.utils.NotificationUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
@@ -30,8 +33,21 @@ class MainActivity : AppCompatActivity() {
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationUtils.createNotificationChannel(
+                this@MainActivity,
+                NotificationUtils.channelInfo(this@MainActivity)
+            )
+        }
+
         custom_button.setOnClickListener {
-            download()
+            // download()
+            NotificationUtils.sendNotification(
+                applicationContext = this@MainActivity,
+                downloadId = 4,
+                status = DownloadStatus.SUCCESS,
+               fileName =  "GilinhoTest"
+            )
         }
     }
 
