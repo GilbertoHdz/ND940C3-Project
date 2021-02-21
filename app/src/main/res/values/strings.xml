@@ -16,6 +16,7 @@
     <string name="retrofit_selection">Retrofit - Type-safe HTTP client for Android and Java by Square, Inc.</string>
     <string name="load_app_selection">LoadApp - Current Repository by GilbertoHdz</string>
     <string name="glide_selection">Glide - Image loading library by BumpTech</string>
+    <string name="no_selection">Please select your file to download!</string>
 
     <string name="download">Download</string>
     <string name="downloading"> Downloading </string>
