@@ -7,10 +7,13 @@
     tools:context="DetailActivity"
     tools:showIn="@layout/activity_detail">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/constraintMotionLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="8dp"
+        app:motionInterpolator="linear"
+        app:layoutDescription="@xml/content_detail_xml_constraintlayout_scene"
         app:layout_constraintBottom_toTopOf="@+id/btn_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -79,7 +82,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/contentStatusLabel"
             app:layout_constraintTop_toTopOf="@+id/contentStatusLabel" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 
     <Button
         android:id="@+id/btn_back"

@@ -1,9 +1,9 @@
 package com.gilbertohdz
 
 import android.os.Bundle
+import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import com.gilbertohdz.utils.DownloadStatus
-import com.gilbertohdz.utils.NotificationUtils
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.content_detail.*
 
@@ -23,15 +23,22 @@ class DetailActivity : AppCompatActivity() {
 
         contentFileValue.text = fileName
         contentStatusValue.text = when (downloadStatus) {
-            DownloadStatus.SUCCESS ->  getString(R.string.download_success)
+            DownloadStatus.SUCCESS -> getString(R.string.download_success)
             DownloadStatus.FAIL -> getString(R.string.download_fail)
         }
 
-        // motionDetailScene.transitionToEnd()
+        Handler().postDelayed({
+            constraintMotionLayout.transitionToEnd()
+        }, 1000)
 
         btn_back.setOnClickListener {
             finish()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        constraintMotionLayout.transitionToStart()
     }
 
     companion object {
@@ -40,9 +47,9 @@ class DetailActivity : AppCompatActivity() {
         private const val EXTRA_FILE_NAME = "file_name"
 
         fun withExtras(
-            downloadId: Int,
-            downloadStatus: DownloadStatus,
-            fileName: String
+                downloadId: Int,
+                downloadStatus: DownloadStatus,
+                fileName: String
         ): Bundle {
             return Bundle().apply {
                 putInt(EXTRA_DOWNLOAD_ID, downloadId)
