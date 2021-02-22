@@ -7,6 +7,80 @@
     tools:context="DetailActivity"
     tools:showIn="@layout/activity_detail">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="contentFileNameLabel,contentStatusLabel"
+            tools:layout_editor_absoluteX="411dp" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="200dp"
+            android:layout_height="198dp"
+            android:src="@drawable/ic_baseline_archive_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/contentFileNameLabel"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:text="@string/file"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/contentStatusLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+        <TextView
+            android:id="@+id/contentStatusLabel"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:text="@string/status"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contentFileNameLabel" />
+
+        <TextView
+            android:id="@+id/contentFileValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/load_app_selection"
+            app:layout_constraintBottom_toBottomOf="@+id/contentFileNameLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/contentFileNameLabel"
+            app:layout_constraintTop_toTopOf="@+id/contentFileNameLabel" />
+
+        <TextView
+            android:id="@+id/contentStatusValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@string/download_success"
+            app:layout_constraintBottom_toBottomOf="@+id/contentStatusLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/contentStatusLabel"
+            app:layout_constraintTop_toTopOf="@+id/contentStatusLabel" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <Button
         android:id="@+id/btn_back"
         android:layout_width="match_parent"
