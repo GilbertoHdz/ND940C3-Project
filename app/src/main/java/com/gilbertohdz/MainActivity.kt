@@ -53,18 +53,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun radioSelectionListener() {
         custom_button.setOnClickListener {
-            // if (custom_button.getState() != ButtonState.Completed) return@setOnClickListener
+            if (custom_button.getState() != ButtonState.Completed) return@setOnClickListener
 
-            custom_button.progress(0, ButtonState.Clicked)
             when (contentMainRadioGroup.checkedRadioButtonId) {
                 R.id.rbGlide -> {
                     download(URL_GLIDE)
+                    custom_button.progress(0, ButtonState.Loading)
                 }
                 R.id.rbLoadApp -> {
                     download(URL)
+                    custom_button.progress(0, ButtonState.Loading)
                 }
                 R.id.rbRetrofit -> {
                     download(URL_RETROFIT)
+                    custom_button.progress(0, ButtonState.Loading)
                 }
                 else -> {
                     Toast.makeText(
@@ -100,8 +102,10 @@ class MainActivity : AppCompatActivity() {
                                 status = DownloadStatus.SUCCESS,
                                 fileName = fileName
                             )
+                            custom_button.progress(100, ButtonState.Completed)
                         }
                         DownloadManager.STATUS_FAILED -> {
+                            custom_button.progress(100, ButtonState.Completed)
                             NotificationUtils.sendNotification(
                                 applicationContext = this@MainActivity,
                                 downloadId = 4,
@@ -119,6 +123,7 @@ class MainActivity : AppCompatActivity() {
         var finishDownload = false
         while (!finishDownload) {
             val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+
             if (cursor.moveToFirst()) {
                 val status: Int =
                     cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
@@ -128,25 +133,16 @@ class MainActivity : AppCompatActivity() {
                         custom_button.progress(100, ButtonState.Completed)
                     }
                     DownloadManager.STATUS_RUNNING -> {
-                        val total: Long = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
-                        if (total >= 0) {
-                            val downloaded: Long = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
-                            val progress = (downloaded * 100L / total).toInt()
-                            custom_button.progress(progress, ButtonState.Loading)
-                            // if you use downloadmanger in async task, here you can use like this to display progress.
-                            // Don't forget to do the division in long to get more digits rather than double.
-                            //  publishProgress((int) ((downloaded * 100L) / total));
-                        }
+                        custom_button.progress(0, ButtonState.Loading)
                     }
                     DownloadManager.STATUS_SUCCESSFUL -> {
                         finishDownload = true
-                        //custom_button.progress(100, ButtonState.Completed)
+                        custom_button.progress(100, ButtonState.Completed)
                     }
                 }
             }
         }
     }
-
 
     private fun download(urlStr: String) {
         val request =
@@ -160,7 +156,7 @@ class MainActivity : AppCompatActivity() {
         downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID = downloadManager.enqueue(request)// enqueue puts the download request in the queue.
         filesDownloadedId.add(downloadID)
-        percentDownload(downloadManager)
+        //percentDownload(downloadManager)
     }
 
     companion object {

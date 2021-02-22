@@ -21,7 +21,8 @@ class LoadingButton @JvmOverloads constructor(
 
     private var widthSize = 0
     private var heightSize = 0
-    private var progress = 0
+    private var progressCircular = 0
+    private var progressBar = 0
     private val loadingRect = Rect()
 
     private lateinit var valueAnimator: ValueAnimator
@@ -66,7 +67,9 @@ class LoadingButton @JvmOverloads constructor(
 
         valueAnimator = ValueAnimator.ofInt(0, 100).setDuration(1000).apply {
             addUpdateListener {
-                progress = it.animatedValue as Int
+                val newVal = it.animatedValue as Int
+                progressBar = if (progressBar <= newVal) newVal else progressBar
+                progressCircular = newVal
                 invalidate()
             }
             addListener(object : AnimatorListenerAdapter() {
@@ -77,11 +80,12 @@ class LoadingButton @JvmOverloads constructor(
 
                 override fun onAnimationCancel(animation: Animator?) {
                     super.onAnimationCancel(animation)
-                    progress = 0
+                    progressCircular = 0
                 }
 
                 override fun onAnimationRepeat(animation: Animator?) {
                     super.onAnimationRepeat(animation)
+                    progressCircular = progressCircular xor 1
                 }
             })
             interpolator = LinearInterpolator()
@@ -95,17 +99,16 @@ class LoadingButton @JvmOverloads constructor(
         when (buttonState) {
             ButtonState.Clicked -> {
                 Log.i("BTN", "clicked")
-                valueAnimator.start()
             }
             ButtonState.Loading -> {
-                Log.i("BTN", "loading: $progress")
+                Log.i("BTN", "loading: $progressBar")
                 textToDraw = context.getString(R.string.downloading).toUpperCase(Locale.ENGLISH)
-                //valueAnimator.start()
+                valueAnimator.start()
             }
             ButtonState.Completed -> {
                 Log.i("BTN", "completed")
                 textToDraw = context.getString(R.string.download).toUpperCase(Locale.ENGLISH)
-                //valueAnimator.cancel()
+                valueAnimator.cancel()
             }
         }
 
@@ -136,10 +139,10 @@ class LoadingButton @JvmOverloads constructor(
             if (buttonState == ButtonState.Loading) {
                 // Draw button loading background color
                 textPaint.color = secondaryBackgroundColor
-                if (progress == 0) {
-                    loadingRect.set(width * progress / 100, 0, width, height)
+                if (progressBar == 0) {
+                    loadingRect.set(width * progressBar / 100, 0, width, height)
                 } else {
-                    loadingRect.set(0, 0, width * progress / 100, height)
+                    loadingRect.set(0, 0, width * progressBar / 100, height)
                 }
                 it.drawRect(loadingRect, textPaint)
 
@@ -149,13 +152,13 @@ class LoadingButton @JvmOverloads constructor(
                 val circleStartX = (width / 2f + textRect.width() / 2f) + 30
                 val circleStartY = height / 2f - 20
                 circleRect.set(circleStartX, circleStartY, circleStartX + 40, circleStartY + 40)
-                if (progress == 0) {
-                    it.drawArc(circleRect, 0f, progress.toFloat(), true, textPaint)
+                if (progressCircular == 0) {
+                    it.drawArc(circleRect, 0f, progressCircular.toFloat(), true, textPaint)
                 } else {
                     it.drawArc(
                         circleRect,
-                        progress.toFloat(),
-                        (progress.toFloat() * 360) / 100,
+                        progressCircular.toFloat(),
+                        (progressCircular.toFloat() * 360) / 100,
                         true,
                         textPaint
                     )
