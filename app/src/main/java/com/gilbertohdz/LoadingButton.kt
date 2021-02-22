@@ -1,10 +1,15 @@
 package com.gilbertohdz
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
+import android.view.animation.LinearInterpolator
+import com.gilbertohdz.utils.DownloadStatus
 import com.gilbertohdz.utils.dpToPx
 import com.gilbertohdz.utils.spToPx
 import java.util.*
@@ -13,10 +18,13 @@ import kotlin.properties.Delegates
 class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
+
     private var widthSize = 0
     private var heightSize = 0
+    private var progress = 0
+    private val loadingRect = Rect()
 
-    private val valueAnimator = ValueAnimator()
+    private lateinit var valueAnimator: ValueAnimator
 
     private val cornerPath = Path()
     private val circleRect = RectF()
@@ -55,26 +63,60 @@ class LoadingButton @JvmOverloads constructor(
 
             recycle()
         }
+
+        valueAnimator = ValueAnimator.ofInt(0, 100).setDuration(1000).apply {
+            addUpdateListener {
+                progress = it.animatedValue as Int
+                invalidate()
+            }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    this@LoadingButton.buttonState = ButtonState.Completed
+                }
+
+                override fun onAnimationCancel(animation: Animator?) {
+                    super.onAnimationCancel(animation)
+                    progress = 0
+                }
+
+                override fun onAnimationRepeat(animation: Animator?) {
+                    super.onAnimationRepeat(animation)
+                }
+            })
+            interpolator = LinearInterpolator()
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.RESTART
+        }
+
     }
 
     private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
-
         when (buttonState) {
             ButtonState.Clicked -> {
-
+                Log.i("BTN", "clicked")
+                valueAnimator.start()
             }
             ButtonState.Loading -> {
-
+                Log.i("BTN", "loading: $progress")
+                textToDraw = context.getString(R.string.downloading).toUpperCase(Locale.ENGLISH)
+                //valueAnimator.start()
             }
             ButtonState.Completed -> {
-
+                Log.i("BTN", "completed")
+                textToDraw = context.getString(R.string.download).toUpperCase(Locale.ENGLISH)
+                //valueAnimator.cancel()
             }
         }
+
+        requestLayout()
+        invalidate()
     }
 
 
     private val textRect = Rect()
     private var textToDraw = context.getString(R.string.download).toUpperCase(Locale.ENGLISH)
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.let {
@@ -91,9 +133,39 @@ class LoadingButton @JvmOverloads constructor(
             val centerX = measuredWidth.toFloat() / 2 - textRect.centerX()
             val centerY = measuredHeight.toFloat() / 2 - textRect.centerY()
 
+            if (buttonState == ButtonState.Loading) {
+                // Draw button loading background color
+                textPaint.color = secondaryBackgroundColor
+                if (progress == 0) {
+                    loadingRect.set(width * progress / 100, 0, width, height)
+                } else {
+                    loadingRect.set(0, 0, width * progress / 100, height)
+                }
+                it.drawRect(loadingRect, textPaint)
+
+                // Draw circular progress bar
+                textPaint.style = Paint.Style.FILL
+                textPaint.color = circularProgressColor
+                val circleStartX = (width / 2f + textRect.width() / 2f) + 30
+                val circleStartY = height / 2f - 20
+                circleRect.set(circleStartX, circleStartY, circleStartX + 40, circleStartY + 40)
+                if (progress == 0) {
+                    it.drawArc(circleRect, 0f, progress.toFloat(), true, textPaint)
+                } else {
+                    it.drawArc(
+                        circleRect,
+                        progress.toFloat(),
+                        (progress.toFloat() * 360) / 100,
+                        true,
+                        textPaint
+                    )
+                }
+            }
+
             // Draw button text
             textPaint.color = textColor
             it.drawText(textToDraw, centerX, centerY, textPaint)
+            Log.i("BTN", "onDraw(), state: ${this.getState()}")
 
             // Restore saved canvas
             it.restore()
@@ -134,4 +206,21 @@ class LoadingButton @JvmOverloads constructor(
         )
         cornerPath.close()
     }
+
+    override fun getSuggestedMinimumWidth(): Int {
+        textPaint.getTextBounds(textToDraw, 0, textToDraw.length, textRect)
+        return textRect.width() - textRect.left + if (buttonState == ButtonState.Loading) 70 else 0
+    }
+
+    override fun getSuggestedMinimumHeight(): Int {
+        textPaint.getTextBounds(textToDraw, 0, textToDraw.length, textRect)
+        return textRect.height()
+    }
+
+    fun progress(progress: Int, state: ButtonState) {
+        // this.progress = progress
+        this.buttonState = state
+    }
+
+    fun getState() = buttonState
 }

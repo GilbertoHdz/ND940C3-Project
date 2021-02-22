@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import com.gilbertohdz.utils.DownloadStatus
+import com.gilbertohdz.utils.NotificationUtils
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.content_detail.*
 
@@ -16,7 +17,7 @@ class DetailActivity : AppCompatActivity() {
 
         // Clean pending notification
         val notificationDownloadId = intent.extras!!.getInt(EXTRA_DOWNLOAD_ID)
-        // NotificationUtils.clearNotification(this, notificationDownloadId)
+        NotificationUtils.clearNotification(this, notificationDownloadId)
 
         val fileName: String = intent.extras!!.getString(EXTRA_FILE_NAME)!!
         val downloadStatus: DownloadStatus = DownloadStatus.values()[intent.extras!!.getInt(EXTRA_DOWNLOAD_STATUS)]

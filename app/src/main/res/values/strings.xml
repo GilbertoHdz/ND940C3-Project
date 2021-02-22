@@ -19,7 +19,7 @@
     <string name="no_selection">Please select your file to download!</string>
 
     <string name="download">Download</string>
-    <string name="downloading"> Downloading </string>
+    <string name="downloading"> Downloading</string>
     <string name="download_files">Downloading Files</string>
     <string name="download_success">File Successfully Downloaded</string>
     <string name="download_fail">Failed to Download File</string>

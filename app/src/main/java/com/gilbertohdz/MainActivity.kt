@@ -53,6 +53,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun radioSelectionListener() {
         custom_button.setOnClickListener {
+            // if (custom_button.getState() != ButtonState.Completed) return@setOnClickListener
+
+            custom_button.progress(0, ButtonState.Clicked)
             when (contentMainRadioGroup.checkedRadioButtonId) {
                 R.id.rbGlide -> {
                     download(URL_GLIDE)
@@ -114,7 +117,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun percentDownload(downloadManager: DownloadManager) {
         var finishDownload = false
-        var progress: Int = 0
         while (!finishDownload) {
             val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
             if (cursor.moveToFirst()) {
@@ -123,28 +125,24 @@ class MainActivity : AppCompatActivity() {
                 when (status) {
                     DownloadManager.STATUS_FAILED -> {
                         finishDownload = true
+                        custom_button.progress(100, ButtonState.Completed)
                     }
                     DownloadManager.STATUS_RUNNING -> {
-                        val total: Long =
-                            cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+                        val total: Long = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
                         if (total >= 0) {
-                            val downloaded: Long =
-                                cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
-                            progress = (downloaded * 100L / total).toInt()
+                            val downloaded: Long = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+                            val progress = (downloaded * 100L / total).toInt()
+                            custom_button.progress(progress, ButtonState.Loading)
                             // if you use downloadmanger in async task, here you can use like this to display progress.
                             // Don't forget to do the division in long to get more digits rather than double.
                             //  publishProgress((int) ((downloaded * 100L) / total));
                         }
                     }
                     DownloadManager.STATUS_SUCCESSFUL -> {
-                        progress = 100
-                        // if you use aysnc task
-                        // publishProgress(100);
                         finishDownload = true
+                        //custom_button.progress(100, ButtonState.Completed)
                     }
                 }
-
-                Log.i("MANAGER", "progress: $progress")
             }
         }
     }
