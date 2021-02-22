@@ -43,8 +43,8 @@ class MainActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationUtils.createNotificationChannel(
-                    this@MainActivity,
-                    NotificationUtils.channelInfo(this@MainActivity)
+                this@MainActivity,
+                NotificationUtils.channelInfo(this@MainActivity)
             )
         }
 
@@ -55,22 +55,22 @@ class MainActivity : AppCompatActivity() {
         custom_button.setOnClickListener {
             when (contentMainRadioGroup.checkedRadioButtonId) {
                 R.id.rbGlide -> {
+                    download(URL_GLIDE)
                 }
                 R.id.rbLoadApp -> {
+                    download(URL)
                 }
                 R.id.rbRetrofit -> {
+                    download(URL_RETROFIT)
                 }
                 else -> {
-                    Toast.makeText(this@MainActivity, getString(R.string.no_selection), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@MainActivity,
+                        getString(R.string.no_selection),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
-            download()
-            NotificationUtils.sendNotification(
-                    applicationContext = this@MainActivity,
-                    downloadId = 4,
-                    status = DownloadStatus.SUCCESS,
-                    fileName = "GilinhoTest"
-            )
         }
     }
 
@@ -81,16 +81,32 @@ class MainActivity : AppCompatActivity() {
 
                 val extras = intent!!.extras
                 val query = DownloadManager
-                        .Query()
-                        .setFilterById(extras!!.getLong(DownloadManager.EXTRA_DOWNLOAD_ID))
+                    .Query()
+                    .setFilterById(extras!!.getLong(DownloadManager.EXTRA_DOWNLOAD_ID))
 
                 val cursor = downloadManager.query(query)
                 if (cursor.moveToFirst()) {
                     val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
                     val fileName = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
 
-                    Log.i("MANAGER", "status: $status, fileName: $fileName")
-
+                    when (status) {
+                        DownloadManager.STATUS_SUCCESSFUL -> {
+                            NotificationUtils.sendNotification(
+                                applicationContext = this@MainActivity,
+                                downloadId = 4,
+                                status = DownloadStatus.SUCCESS,
+                                fileName = fileName
+                            )
+                        }
+                        DownloadManager.STATUS_FAILED -> {
+                            NotificationUtils.sendNotification(
+                                applicationContext = this@MainActivity,
+                                downloadId = 4,
+                                status = DownloadStatus.FAIL,
+                                fileName = fileName
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -102,19 +118,18 @@ class MainActivity : AppCompatActivity() {
         while (!finishDownload) {
             val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
             if (cursor.moveToFirst()) {
-                val status: Int = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                val status: Int =
+                    cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
                 when (status) {
                     DownloadManager.STATUS_FAILED -> {
                         finishDownload = true
                     }
-                    DownloadManager.STATUS_PAUSED -> {
-                    }
-                    DownloadManager.STATUS_PENDING -> {
-                    }
                     DownloadManager.STATUS_RUNNING -> {
-                        val total: Long = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+                        val total: Long =
+                            cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
                         if (total >= 0) {
-                            val downloaded: Long = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+                            val downloaded: Long =
+                                cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
                             progress = (downloaded * 100L / total).toInt()
                             // if you use downloadmanger in async task, here you can use like this to display progress.
                             // Don't forget to do the division in long to get more digits rather than double.
@@ -134,9 +149,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun download() {
+
+    private fun download(urlStr: String) {
         val request =
-            DownloadManager.Request(Uri.parse(URL))
+            DownloadManager.Request(Uri.parse(urlStr))
                 .setTitle(getString(R.string.app_name))
                 .setDescription(getString(R.string.app_description))
                 .setRequiresCharging(false)
